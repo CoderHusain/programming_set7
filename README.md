@@ -5,7 +5,7 @@ Commands to start
 3) git pull origin master
 
 Steps to start coding:
-1) Install mingw64 for c compiler. Click here to install [http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download]
+1) Install mingw64 for c compiler. Click here to install [http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download]. Add the path of the bin folder of mingw in ENV_VARIABLES.
 2) Install C/C++ extension for Microsoft.
 3) Install code runner extension.
 4) Click run from the upper-right menu.
