@@ -1,8 +1,7 @@
 /**
 *  A menu-driven program for Employee Presence Monitoring System
-*  @author: Team NARAC - Nisha, Anshika, Retesh, Chaitali, Akshat
+*  @author: Team NARAC - Husain,Stuti,Debadrita,Nikhil,Vasundhara,Aditi
 *  @language: C
-*  This program does some magic, anshika and nisha will be explaining soon in a doc
 *  Assumptions:
 *  1. DB folder was already built in the directory outside project directory
 **/
