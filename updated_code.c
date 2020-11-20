@@ -151,7 +151,6 @@ int admin_menu()
     printf("\t4. Log Out\n");
     fflush(stdin);
     printf("\n\t\tYour Choice:\t");
-    fflush(stdin);
     scanf("\n%d", &selection);
     return selection;
 }
