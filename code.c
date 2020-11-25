@@ -173,6 +173,7 @@ void emp_award_view(char emp_id[10])
     FILE *ofile1;
     struct empAward a;
     ofile1 = fopen("award.dat", "r");
+    printf(ofile1);
     if (ofile1 == NULL)
     {
         fprintf(stderr, "\nError opening file\n");
@@ -422,8 +423,7 @@ void emp_edit_employee(char emp_id[10])
                 return;
             }
 
-            
-
+            fclose(file);
             break;
         }
 
@@ -438,7 +438,7 @@ void emp_edit_employee(char emp_id[10])
                 fprintf(stderr, "\nError opening file\n");
                 return;
             }
-
+            fflush(stdin);
             strcpy(a.empId, emp_id);
             printf("\nEnter Award Name: ");
             gets(a.awardName);
@@ -454,7 +454,7 @@ void emp_edit_employee(char emp_id[10])
                 printf("Contents to file writen successfully! \n");
             else
                 printf("Error writing file!\n");
-
+            fclose(file);
             break;
         }
 
@@ -469,7 +469,7 @@ void emp_edit_employee(char emp_id[10])
                 fprintf(stderr, "\nError opening file\n");
                 return;
             }
-
+            fflush(stdin);
             strcpy(c.empId, emp_id);
             printf("\nEnter Software Name: ");
             gets(c.softwareName);
@@ -485,7 +485,7 @@ void emp_edit_employee(char emp_id[10])
                 printf("Contents to file writen successfully! \n");
             else
                 printf("Error writing file!\n");
-
+            fclose(file);
             break;
         }
 
@@ -500,7 +500,7 @@ void emp_edit_employee(char emp_id[10])
                 fprintf(stderr, "\nError opening file\n");
                 return;
             }
-
+            fflush(stdin);
             strcpy(a.empId, emp_id);
             printf("\nIs it a meritorious Achievement (yes/no): ");
             gets(a.isAchievement);
@@ -514,7 +514,7 @@ void emp_edit_employee(char emp_id[10])
                 printf("Contents to file writen successfully! \n");
             else
                 printf("Error writing file!\n");
-
+            fclose(file);
             break;
         }
         case 5:
@@ -579,14 +579,15 @@ void admin_add_employee()
             return;
         }
     }
-
+    fflush(stdin);
     strcpy(e.empId, id);
     printf("\t Employee password: ");
-    gets(e.password);
+    fgets(e.password, 25, stdin);
     printf("\t Employee name: ");
     gets(e.name);
     printf("\t Employee age: ");
     scanf("%d", &e.age); //validation
+    fflush(stdin);
     printf("\t Employee contact: ");
     gets(e.contact);
     printf("\t Employee Address: ");
@@ -624,7 +625,9 @@ void admin_view_employee()
     char id[10];
     printf("\n Enter ID: ");
     scanf("%s", &id);
+    fflush(stdout);
     emp_view_employee(id);
+    fflush(stdout);
     return;
 }
 
