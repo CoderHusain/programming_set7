@@ -1,6 +1,11 @@
 {
+<<<<<<< Updated upstream
     "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "type_traits": "c"
+=======
+    "files.associations": {
+        "MYFILE.C": "cpp"
+>>>>>>> Stashed changes
     }
 }
