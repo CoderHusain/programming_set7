@@ -65,28 +65,27 @@ int selectScope()
 }
 
 //to navigate into admin
-int getCredentials()
+void getCredentials()
 {
-    int result = 0;
+    int result = 1;
     char pass[20];
-    printf("\t\nEnter the password:");
-    scanf("%s", &pass);
-    if (!strcmp(pass, "incorrect"))
-    {
-        result = 1;
-    }
-    else
-    {
-        printf("\t\nEntered password is incorrect\n");
-        if (result != 1)
-        {
-            int val;
+    
 
+    do{
+        printf("\t\nEnter the password:");
+        scanf("%s", &pass);
+        if (!strcmp(pass, "incorrect"))
+        {
+            result = 0;
+        }
+        else{
+            printf("\t\nEntered password is incorrect\n");
+            int val;
             printf("\t1.Try Entering Again \n");
             printf("\t2.Log Out \n");
             scanf("%d", &val);
             if (val == 1)
-                getCredentials();
+                continue;
             else
             {
                 system("@cls||clear");
@@ -94,8 +93,7 @@ int getCredentials()
                 exit(0);
             }
         }
-    }
-    return result;
+    }while(result);
 }
 
 int getEmpPassword(char id[10])
@@ -108,7 +106,7 @@ int getEmpPassword(char id[10])
     if (infile == NULL)
     {
         fprintf(stderr, "\nError opening file\n");
-        return -1;
+        exit(0);
     }
 
     //Read the file contents till end of the file
@@ -627,6 +625,7 @@ void admin_view_employee()
     scanf("%s", &id);
     fflush(stdout);
     emp_view_employee(id);
+    
     fflush(stdout);
     return;
 }
@@ -910,13 +909,9 @@ int main()
         switch (main_selection)
         {
         case 1:
-            cred_result = getCredentials();
-            if (cred_result != 1)
-            {
-                continue;
-            }
-        Admins_menu:
-            admin_selection = admin_menu();
+            getCredentials();
+            
+            Admins_menu: admin_selection = admin_menu();
             system("@cls||clear");
 
             //enters the admin view
@@ -947,8 +942,6 @@ int main()
             break;
 
         case 2:
-
-            // enter emp id
             printf("\n Enter ID: ");
             scanf("%s", &id);
 
