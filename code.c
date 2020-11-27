@@ -15,7 +15,7 @@ struct empDetails
     char name[40];
     short age;
     char address[100];
-    char contact[14];
+    char contact[10];
     char qualifications[50];
     char skills[50];
     float service_years;
@@ -34,13 +34,13 @@ struct empContribution
     char empId[10];
     char softwareName[20];
     char desc[50];
-    char isPatent[5];
+    char isPatent[3];
 };
 
 struct empAchievement
 {
     char empId[10];
-    char isAchievement[5];
+    char isAchievement[3];
     char achievementDetails[50];
 };
 
@@ -50,8 +50,10 @@ struct taskDetails
     char taskName[50];
     char req_skills[50];
     char description[100];
-    //char additionalTraining[50];
 };
+
+void incentiveCheck(char emp_id[10]);
+void AdditionalTrainingCheck(char emp_id[10]);
 
 // select the user
 int selectScope()
@@ -69,16 +71,17 @@ void getCredentials()
 {
     int result = 1;
     char pass[20];
-    
 
-    do{
+    do
+    {
         printf("\t\nEnter the password:");
         scanf("%s", &pass);
         if (!strcmp(pass, "incorrect"))
         {
             result = 0;
         }
-        else{
+        else
+        {
             printf("\t\nEntered password is incorrect\n");
             int val;
             printf("\t1.Try Entering Again \n");
@@ -93,90 +96,105 @@ void getCredentials()
                 exit(0);
             }
         }
-    }while(result);
+    } while (result);
 }
 
-int getEmpPassword(char id[10])
+int checkEmployee(char emp_id[10])
 {
+    FILE *infile;
+    struct empDetails e;
+
+    infile = fopen("emp.dat", "a+");
+    while (fread(&e, sizeof(struct empDetails), 1, infile))
+    {
+        if (!strcmpi(e.empId, emp_id))
+        {
+            fclose(infile);
+            return 1;
+        }
+    }
+    fclose(infile);
+    return 0;
+}
+
+void getEmpPassword(char id[10])
+{
+    int result = 0;
+    char eId[10];
+    do
+    {
+        result = checkEmployee(id);
+        printf("\n%d", result);
+        if (result == 0)
+        {
+            int val;
+            system("@cls||clear");
+            printf("\tEmployee ID is incorrect\n");
+            printf("\t1.Try Entering Again \n");
+            printf("\t2.Log Out \n");
+            scanf("%d", &val);
+            if (val == 1)
+            {
+                // enter emp id
+                fflush(stdin);
+                printf("\n Enter ID: ");
+                scanf("%s", &eId);
+                strcpy(id, eId);
+                printf("\n%s", id);
+            }
+            else if (val == 2)
+            {
+                system("@cls||clear");
+                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                exit(0);
+            }
+        }
+    } while (result != 1);
 
     FILE *infile;
-    int result = 0;
     struct empDetails e;
+    int val;
+    char pass[20];
     infile = fopen("emp.dat", "a+");
-    if (infile == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        exit(0);
-    }
 
     //Read the file contents till end of the file
     while (fread(&e, sizeof(struct empDetails), 1, infile))
     {
-        if (!strcmp(e.empId, id))
+        if (!strcmpi(e.empId, id))
         {
-            char pass[20];
-            printf("\t\nEnter the password: ");
-            scanf("%s", &pass);
-            if (!strcmp(pass, e.password))
+            do
             {
-                result = 2;
-            }
-            else
-            {
-                int val;
+                fflush(stdin);
+                printf("\t\nEnter the password: ");
+                scanf("%s", &pass);
+                printf("%s,%s", e.password, pass);
+                if (!strcmp(pass, e.password))
+                {
+                    fclose(infile);
+                    return;
+                }
+                //system("@cls||clear");
                 printf("\n\nIncorrect Password!!!\n ");
                 printf("\t1.Try Entering Again \n");
                 printf("\t2.Log Out \n");
                 scanf("%d", &val);
-                if (val == 1)
-                    getEmpPassword(id);
-                else
+                if (val == 2)
                 {
                     system("@cls||clear");
                     printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
                     exit(0);
                 }
-            }
+
+            } while (val == 1);
         }
     }
-
-    if (result == 0)
-    {
-        int val;
-        char id[10];
-        printf("\tEmployee ID is incorrect\n");
-        printf("\t1.Try Entering Again \n");
-        printf("\t2.Log Out \n");
-        scanf("%d", &val);
-        if (val == 1)
-        {
-            // enter emp id
-            printf("\n Enter ID: ");
-            scanf("%s", &id);
-            getEmpPassword(id);
-        }
-
-        else
-        {
-            system("@cls||clear");
-            printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-            exit(0);
-        }
-    }
-    return result;
 }
 
 void emp_award_view(char emp_id[10])
 {
     FILE *ofile1;
     struct empAward a;
-    ofile1 = fopen("award.dat", "r");
-    printf(ofile1);
-    if (ofile1 == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    ofile1 = fopen("award.dat", "a+");
 
     //Read the file contents till end of the file
     while (fread(&a, sizeof(struct empAward), 1, ofile1))
@@ -198,12 +216,7 @@ void emp_cont_view(char emp_id[10])
 {
     FILE *ofile1;
     struct empContribution cont;
-    ofile1 = fopen("patent.dat", "r");
-    if (ofile1 == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    ofile1 = fopen("patent.dat", "a+");
 
     //Read the file contents till end of the file
     while (fread(&cont, sizeof(struct empContribution), 1, ofile1))
@@ -229,12 +242,7 @@ void emp_ach_view(char emp_id[10])
 {
     FILE *ofile1;
     struct empAchievement ach;
-    ofile1 = fopen("ach.dat", "r");
-    if (ofile1 == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    ofile1 = fopen("ach.dat", "a+");
 
     //Read the file contents till end of the file
     while (fread(&ach, sizeof(struct empAchievement), 1, ofile1))
@@ -259,12 +267,7 @@ void emp_task_view(char emp_id[10])
 {
     FILE *ofile1;
     struct taskDetails task;
-    ofile1 = fopen("tasks.dat", "r");
-    if (ofile1 == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    ofile1 = fopen("tasks.dat", "a+");
 
     //Read the file contents till end of the file
     while (fread(&task, sizeof(struct taskDetails), 1, ofile1))
@@ -325,12 +328,7 @@ void emp_view_employee(char emp_id[10])
     int flag = 0;
 
     //Open the file for reading
-    ofile1 = fopen("emp.dat", "r");
-    if (ofile1 == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    ofile1 = fopen("emp.dat", "a+");
 
     //Read the file contents till end of the file
     while (fread(&e, sizeof(struct empDetails), 1, ofile1))
@@ -361,19 +359,136 @@ void emp_view_employee(char emp_id[10])
         printf("\n Employee doesn't exist. Check your details properly!!!");
         return;
     }
-    int ch;
-    printf("\n\n\n\t1. Back to menu\t\t2. Logout\n");
-    scanf("%d", &ch);
-    if (ch == 1)
+
+    printf("\n");
+    system("pause");
+}
+
+void emp_details_update(char emp_id[10])
+{
+    FILE *outfile;
+    struct empDetails e;
+    strcpy(e.empId, emp_id);
+    fflush(stdin);
+    printf("\t Employee password: ");
+    gets(e.password);
+
+    int isValid = 1;
+    while (1)
     {
-        return;
+        fflush(stdin);
+        printf("\t Employee name: ");
+        gets(e.name);
+        for (int i = 0; i < 20; i++)
+        {
+            if ((e.name[i] >= 65) && (e.name[i] <= 112))
+            {
+                isValid = 1;
+                break;
+            }
+            else
+            {
+                isValid = 0;
+            }
+        }
+        if (isValid)
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Name should not contain integer or special characters, enter again\n");
+        }
+    }
+
+    while (1)
+    {
+        fflush(stdin);
+        printf("\t Employee age: ");
+        scanf("%d", &e.age);
+        if ((e.age > 18) && (e.age < 58))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Invalid Age, enter again\n");
+            continue;
+        }
+    }
+    isValid = 1;
+    while (1)
+    {
+        fflush(stdin);
+        printf("\t Employee contact: ");
+        gets(e.contact);
+        for (int i = 0; i < 10; i++)
+        {
+            if ((e.contact[i] < 48) || (e.contact[i] > 57))
+            {
+                isValid = 0;
+                break;
+            }
+            else
+            {
+                isValid = 1;
+            }
+        }
+        if (isValid)
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Contact number should not contain characters, enter again\n");
+        }
+    }
+
+    fflush(stdin);
+    printf("\t Employee Address: ");
+    gets(e.address);
+
+    fflush(stdin);
+    printf("\t Qualification: ");
+    gets(e.qualifications);
+
+    fflush(stdin);
+    printf("\t Employee skills: ");
+    gets(e.skills);
+
+    isValid = 1;
+    while (1)
+    {
+        fflush(stdin);
+        printf("\t Years of Service: ");
+        scanf("%f", &e.service_years);
+        if ((e.age >= 0) && (e.age <= 40))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Invalid, enter again\n");
+            continue;
+        }
+    }
+
+    //Open file for writing
+    outfile = fopen("emp.dat", "a+");
+
+    //Write struct to the file
+    fwrite(&e, sizeof(struct empDetails), 1, outfile);
+
+    if (fwrite != 0)
+    {
+        printf("Contents to file writen successfully! \n");
+        system("pause");
     }
     else
-    {
-        system("@cls||clear");
-        printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-        exit(0);
-    }
+        printf("Error writing file!\n");
+
+    //Close file
+    fclose(outfile);
 }
 
 //edit employee details
@@ -412,17 +527,7 @@ void emp_edit_employee(char emp_id[10])
         {
         case 1:
         {
-            struct empDetails e;
-            //Open the file
-            file = fopen("emp.dat", "a+");
-            if (file == NULL)
-            {
-                fprintf(stderr, "\nError opening file\n");
-                return;
-            }
-
-            fclose(file);
-            break;
+            emp_details_update(emp_id);
         }
 
         case 2:
@@ -431,11 +536,6 @@ void emp_edit_employee(char emp_id[10])
 
             //Open the file
             file = fopen("award.dat", "a+");
-            if (file == NULL)
-            {
-                fprintf(stderr, "\nError opening file\n");
-                return;
-            }
             fflush(stdin);
             strcpy(a.empId, emp_id);
             printf("\nEnter Award Name: ");
@@ -449,7 +549,10 @@ void emp_edit_employee(char emp_id[10])
             fwrite(&a, sizeof(struct empAward), 1, file);
 
             if (fwrite != 0)
+            {
                 printf("Contents to file writen successfully! \n");
+                system("pause");
+            }
             else
                 printf("Error writing file!\n");
             fclose(file);
@@ -462,11 +565,6 @@ void emp_edit_employee(char emp_id[10])
 
             //Open the file
             file = fopen("patent.dat", "a+");
-            if (file == NULL)
-            {
-                fprintf(stderr, "\nError opening file\n");
-                return;
-            }
             fflush(stdin);
             strcpy(c.empId, emp_id);
             printf("\nEnter Software Name: ");
@@ -480,7 +578,10 @@ void emp_edit_employee(char emp_id[10])
             fwrite(&c, sizeof(struct empContribution), 1, file);
 
             if (fwrite != 0)
+            {
                 printf("Contents to file writen successfully! \n");
+                system("pause");
+            }
             else
                 printf("Error writing file!\n");
             fclose(file);
@@ -493,11 +594,6 @@ void emp_edit_employee(char emp_id[10])
 
             //Open the file
             file = fopen("ach.dat", "a+");
-            if (file == NULL)
-            {
-                fprintf(stderr, "\nError opening file\n");
-                return;
-            }
             fflush(stdin);
             strcpy(a.empId, emp_id);
             printf("\nIs it a meritorious Achievement (yes/no): ");
@@ -509,7 +605,10 @@ void emp_edit_employee(char emp_id[10])
             fwrite(&a, sizeof(struct empAchievement), 1, file);
 
             if (fwrite != 0)
+            {
                 printf("Contents to file writen successfully! \n");
+                system("pause");
+            }
             else
                 printf("Error writing file!\n");
             fclose(file);
@@ -539,93 +638,80 @@ void emp_edit_employee(char emp_id[10])
 void admin_add_employee()
 {
     system("@cls||clear");
-    struct empDetails e;
-    FILE *outfile, *outfile2, *infile;
     char id[10];
     printf("\n----------------Admin View-------------------\n\n");
     printf("\t Employee Id: ");
     scanf("%s", &id);
 
-    //Open file for reading
-    infile = fopen("emp.dat", "a+");
-    if (infile == NULL)
+    int result = checkEmployee(id);
+    int ch = 0;
+    if (result)
     {
-        fprintf(stderr, "\nError in opening file");
-        return;
-    }
-
-    while (fread(&e, sizeof(struct empDetails), 1, infile))
-    {
-        if (!strcmp(e.empId, id))
+        do
         {
-            int ch;
             printf("\nEmployee already exist!!!\n\n");
             printf("Do you wish to update the employee details?\n1. Yes\n2. No\n: ");
             scanf("%d", ch);
             if (ch == 1)
             {
-                emp_edit_employee(e.empId);
+                emp_edit_employee(id);
             }
             else if (ch == 2)
             {
-                break; //its getting out of code, IDK
+                return;
             }
             else
             {
                 printf("\nInvalid choice");
             }
-            return;
-        }
-    }
-    fflush(stdin);
-    strcpy(e.empId, id);
-    printf("\t Employee password: ");
-    fgets(e.password, 25, stdin);
-    printf("\t Employee name: ");
-    gets(e.name);
-    printf("\t Employee age: ");
-    scanf("%d", &e.age); //validation
-    fflush(stdin);
-    printf("\t Employee contact: ");
-    gets(e.contact);
-    printf("\t Employee Address: ");
-    gets(e.address);
-    printf("\t Qualification: ");
-    gets(e.qualifications);
-    printf("\t Employee skills: ");
-    gets(e.skills);
-    printf("\t Years of Service: ");
-    scanf("%f", &e.service_years);
-    //Open file for writing
-    outfile = fopen("emp.dat", "a+");
-    if ((outfile == NULL))
-    {
-        fprintf(stderr, "\nError in opening file");
-        return;
+        } while (ch != 1);
     }
 
-    //Write struct to the file
-    fwrite(&e, sizeof(struct empDetails), 1, outfile);
+    emp_details_update(id);
 
-    if (fwrite != 0)
-        printf("Contents to file writen successfully! \n");
-    else
-        printf("Error writing file!\n");
-
-    //Close file
-    fclose(outfile);
     return;
 }
 
 void admin_view_employee()
 {
     // enter emp id
-    char id[10];
+    char id[10], eId[10];
+    int result;
     printf("\n Enter ID: ");
     scanf("%s", &id);
+    do
+    {
+        result = checkEmployee(id);
+        printf("\n%d", result);
+        if (result == 0)
+        {
+            int val;
+            system("@cls||clear");
+            printf("\tEmployee ID is incorrect\n");
+            printf("\t1.Try Entering Again \n");
+            printf("\t2.Log Out \n");
+            scanf("%d", &val);
+            if (val == 1)
+            {
+                // enter emp id
+                fflush(stdin);
+                printf("\n Enter ID: ");
+                scanf("%s", &eId);
+                strcpy(id, eId);
+                printf("\n%s", id);
+            }
+            else if (val == 2)
+            {
+                system("@cls||clear");
+                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                exit(0);
+            }
+        }
+    } while (result != 1);
+
     fflush(stdout);
     emp_view_employee(id);
-    
+
     fflush(stdout);
     return;
 }
@@ -634,9 +720,40 @@ void admin_edit_employee()
 {
     system("@cls||clear");
     // enter emp id
-    char id[10];
+    char id[10], eId[10];
+    int result;
     printf("\n Enter ID: ");
     scanf("%s", &id);
+    do
+    {
+        result = checkEmployee(id);
+        printf("\n%d", result);
+        if (result == 0)
+        {
+            int val;
+            system("@cls||clear");
+            printf("\tEmployee ID is incorrect\n");
+            printf("\t1.Try Entering Again \n");
+            printf("\t2.Log Out \n");
+            scanf("%d", &val);
+            if (val == 1)
+            {
+                // enter emp id
+                fflush(stdin);
+                printf("\n Enter ID: ");
+                scanf("%s", &eId);
+                strcpy(id, eId);
+                printf("\n%s", id);
+            }
+            else if (val == 2)
+            {
+                system("@cls||clear");
+                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                exit(0);
+            }
+        }
+    } while (result != 1);
+
     emp_edit_employee(id);
     return;
 }
@@ -746,27 +863,79 @@ void admin_assign_task()
     //assign task to empployee
     struct taskDetails task;
     FILE *outfile;
+    char id[10], eId[10];
+    int result;
     fflush(stdin);
     printf("\n----------------Admin View-------------------\n\n");
     printf("Enter the employee id to whom the task is assigned : ");
-    gets(task.empId);
-    printf("Enter the task name: ");
+    do
+    {
+        result = checkEmployee(id);
+        printf("\n%d", result);
+        if (result == 0)
+        {
+            int val;
+            system("@cls||clear");
+            printf("\tEmployee ID is incorrect\n");
+            printf("\t1.Try Entering Again \n");
+            printf("\t2.Log Out \n");
+            scanf("%d", &val);
+            if (val == 1)
+            {
+                // enter emp id
+                fflush(stdin);
+                printf("\n Enter ID: ");
+                scanf("%s", &eId);
+                strcpy(id, eId);
+                printf("\n%s", id);
+            }
+            else if (val == 2)
+            {
+                system("@cls||clear");
+                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                exit(0);
+            }
+        }
+    } while (result != 1);
+
+    strcpy(task.empId, id);
+
+    int isValid = 1;
+    while (1)
+    {
+        fflush(stdin);
+        printf("Enter the task name: ");
     gets(task.taskName);
+        for (int i = 0; i < 20; i++)
+        {
+            if ((task.taskName[i] >= 65) && (task.taskName[i] <= 112))
+            {
+                isValid = 1;
+                break;
+            }
+            else
+            {
+                isValid = 0;
+            }
+        }
+        if (isValid)
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Name should not contain integer or special characters, enter again\n");
+        }
+    }
+
     printf("Enter the task description: ");
     gets(task.description);
     printf("Enter the required skills for the task : ");
     gets(task.req_skills);
 
-    // AdditionalTrainingCheck(task.empId);
-
     //Open file for writing
 
     outfile = fopen("tasks.dat", "a+");
-    if (outfile == NULL)
-    {
-        fprintf(stderr, "\nError in opening file");
-        return;
-    }
 
     //Write struct to the file
     fwrite(&task, sizeof(struct taskDetails), 1, outfile);
@@ -774,6 +943,7 @@ void admin_assign_task()
     if (fwrite != 0)
     {
         printf("Contents to file writen successfully! \n");
+        system("pause");
     }
     else
         printf("Error writing file!\n");
@@ -791,12 +961,7 @@ void incentiveCheck(char emp_id[10])
     int flag = 0;
 
     //Open the file for reading
-    file = fopen("emp.dat", "r");
-    if (file == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    file = fopen("emp.dat", "a+");
 
     //Read the file contents till end of the file
     while (fread(&e, sizeof(struct empDetails), 1, file))
@@ -813,12 +978,7 @@ void incentiveCheck(char emp_id[10])
     }
     fclose(file);
 
-    file = fopen("emp.dat", "r");
-    if (file == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        return;
-    }
+    file = fopen("emp.dat", "a+");
     fclose(file);
 
     file2 = fopen("award.dat", "r");
@@ -844,58 +1004,6 @@ void incentiveCheck(char emp_id[10])
     }
 }
 
-// void promotionCheck(char emp_id[10])
-// {
-//     FILE *file;
-//     struct empAchievement a;
-//     struct empContribution c;
-
-//     //Open the file for reading
-//     file = fopen("ach.dat", "r");
-//     if (file == NULL)
-//     {
-//         fprintf(stderr, "\nError opening file\n");
-//         return;
-//     }
-
-//     //Read the file contents till end of the file
-//     while (fread(&a, sizeof(struct empAchievement), 1, file))
-//     {
-//         if (!strcmpi(a.empId, emp_id))
-//         {
-//             if (!strcmpi(a.isAchievement,"YES"))
-//             {
-//                 printf("\nCongratulations on your achievement!!!\n");
-//                 break;
-//             }
-//         }
-//     }
-//     fclose(file);
-
-//     //Open the file for reading
-//     file = fopen("patent.dat", "r");
-//     if (file == NULL)
-//     {
-//         fprintf(stderr, "\nError opening file\n");
-//         return;
-//     }
-
-//     //Read the file contents till end of the file
-//     while (fread(&c, sizeof(struct empContribution), 1, file))
-//     {
-//         if (!strcmpi(c.empId, emp_id))
-//         {
-//             if (!strcmpi(c.isPatent,"YES"))
-//             {
-//                 printf("\nCongratulations you have been promoted for your Contibution to the organization!!!\n");
-//                 break;
-//             }
-//         }
-//     }
-//     fclose(file);
-
-// }
-
 int main()
 {
     int main_selection, admin_selection, employee_selection, cred_result;
@@ -910,8 +1018,9 @@ int main()
         {
         case 1:
             getCredentials();
-            
-            Admins_menu: admin_selection = admin_menu();
+
+        Admins_menu:
+            admin_selection = admin_menu();
             system("@cls||clear");
 
             //enters the admin view
@@ -945,11 +1054,7 @@ int main()
             printf("\n Enter ID: ");
             scanf("%s", &id);
 
-            cred_result = getEmpPassword(id);
-            if (cred_result != 2)
-            {
-                continue;
-            }
+            getEmpPassword(id);
 
         Employee_menu:
             employee_selection = employee_menu();
