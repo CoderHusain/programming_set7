@@ -54,7 +54,7 @@ struct taskDetails //structure for employee task
 };
 
 //function declarations
-int selectScope();
+void selectScope();
 void getCredentials();
 int checkEmployee(char emp_id[10]);
 void getEmpPassword(char emp_id[10]);
@@ -62,8 +62,8 @@ void emp_award_view(char emp_id[10]);
 void emp_cont_view(char emp_id[10]);
 void emp_ach_view(char emp_id[10]);
 void emp_task_view(char emp_id[10]);
-int admin_menu();
-int employee_menu();
+void admin_menu();
+void employee_menu(char emp_id[10]);
 void emp_view_employee(char emp_id[10]);
 void emp_details_update(char emp_id[10]);
 void emp_edit_employee(char emp_id[10]);
@@ -76,14 +76,49 @@ void admin_edit_employee();
 void admin_assign_task();
 void AdditionalTrainingCheck(char emp_id[10]);
 
-int selectScope() // menu to select the user
+void selectScope() // menu to select the user
 {
-    int scope;
-    printf("Please Make a Selection:\n\n");
-    printf("\t1. Admin\n\t2. Employee\n\t3. EXIT");
-    printf("\n\tEnter the options[1/2/3]:");
-    scanf("\n%d", &scope);
-    return scope;
+    char main_selection[10], id[10];
+
+    while (1)
+    {
+        system("@cls||clear");
+        printf("Please Make a Selection:\n\n");
+        printf("\t1. Admin\n\t2. Employee\n\t3. EXIT");
+        printf("\n\tEnter the options[1/2/3]:");
+        scanf(" %s", &main_selection);
+        if (strlen(main_selection) > 1)
+        {
+            main_selection[0] = 'a';
+        }
+
+        switch (main_selection[0])
+        {
+        case '1':
+            getCredentials();
+            admin_menu();
+            continue;
+
+        case '2':
+            system("@cls||clear");
+            printf("\n Enter ID: ");
+            scanf("%s", &id);
+
+            getEmpPassword(id);
+            employee_menu(id);
+            continue;
+
+        case '3':
+            system("@cls||clear");
+            printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+            exit(0);
+
+        default:
+            printf("Invalid choice\n");
+            Sleep(1000);
+            break;
+        }
+    }
 }
 
 void getCredentials() //function to check admin password
@@ -93,6 +128,7 @@ void getCredentials() //function to check admin password
 
     do
     {
+        system("@cls||clear");
         printf("\t\nEnter the password:");
         scanf("%s", &pass);
         if (!strcmp(pass, "incorrect")) //if password is correct,return 0
@@ -181,6 +217,7 @@ void getEmpPassword(char id[10]) //function to check employee password
             do
             {
                 fflush(stdin);
+                system("@cls||clear");
                 printf("\t\nEnter the password: ");
                 scanf("%s", &pass);
                 printf("%s,%s", e.password, pass);
@@ -218,7 +255,8 @@ void emp_award_view(char emp_id[10]) //function to view award details recieved b
     {
         if (!strcmp(a.empId, emp_id))
         {
-            printf("\n\n-------------------Employee Achievement Data-----------------------\n\n");
+            system("@cls||clear");
+            printf("\n\n-------------------Employee Award Data-----------------------\n\n");
             printf("Award name:\t%s\n", a.awardName);
             printf("Award Field:\t%s\n", a.awardField);
             printf("Description:\t%s\n", a.description);
@@ -247,6 +285,7 @@ void emp_cont_view(char emp_id[10]) //function to view any contribution for the 
     {
         if (!strcmp(cont.empId, emp_id))
         {
+            system("@cls||clear");
             printf("\n\n-------------------Employee Contribution Data-----------------------\n\n");
             printf("Software name:\t%s\n", cont.softwareName);
             printf("Description:\t%s\n", cont.desc);
@@ -276,6 +315,7 @@ void emp_ach_view(char emp_id[10]) //function to view any meritorious achievemen
     {
         if (!strcmp(ach.empId, emp_id))
         {
+            system("@cls||clear");
             printf("\n\n-------------------Employee Achievement Data-----------------------\n\n");
             printf("Achievement:\t%s\n", ach.achievementDetails);
             if (!strcmpi(ach.isAchievement, "YES"))
@@ -316,45 +356,113 @@ void emp_task_view(char emp_id[10]) //function to view tasks assigned to employe
     system("@cls||clear");
 }
 
-int admin_menu() // Menu for admin operations
+void admin_menu() // Menu for admin operations
 {
-    system("@cls||clear");
-    int selection;
-    printf("\n----------------Admin View-------------------\n\n");
-    printf("Please Make a Selection:\n\n");
-    printf("\t1. Add Employee\n");
-    printf("\t2. View Employee by ID \n");
-    printf("\t3. Edit Employee details \n");
-    printf("\t4. Assign task to employees\n");
-    printf("\t5. Log Out\n");
-    fflush(stdin);
-    printf("\n\t\tYour Choice:\t");
-    fflush(stdin);
-    scanf("\n%d", &selection);
-    return selection;
+    do
+    {
+        system("@cls||clear");
+        char admin_selection[10];
+        printf("\n----------------Admin View-------------------\n\n");
+        printf("Please Make a Selection:\n\n");
+        printf("\t1. Add Employee\n");
+        printf("\t2. View Employee by ID \n");
+        printf("\t3. Add Additional details \n");
+        printf("\t4. Assign task to employees\n");
+        printf("\t5. Back\n");
+        printf("\n\t\tYour Choice:\t");
+        fflush(stdin);
+        scanf("%s", &admin_selection);
+        if (strlen(admin_selection) > 1)
+        {
+            admin_selection[0] = 'a';
+        }
+
+        //enters the admin view
+        switch (admin_selection[0])
+        {
+        case '1':
+            admin_add_employee();
+            continue;
+
+        case '2':
+            admin_view_employee();
+            continue;
+
+        case '3':
+            admin_edit_employee();
+            continue;
+
+        case '4':
+            admin_assign_task();
+            continue;
+
+        case '5':
+            //logs out
+            system("@cls||clear");
+            return;
+
+        default:
+            printf("Invalid choice\n");
+            Sleep(1000);
+        }
+    } while (1);
 }
 
-int employee_menu() //Menu for employee operations
+void employee_menu(char emp_id[10]) //Menu for employee operations
 {
-    system("@cls||clear");
-    int selection;
-    printf("\n----------------Employee View-------------------\n\n");
-    printf("Please Make a Selection:\n\n");
-    printf("\t1. View Personal Details\n");
-    printf("\t2. View Tasks\n");
-    printf("\t3. Edit Profile\n");
-    printf("\t4. Log Out\n");
-    printf("\n\t\tYour Choice:\t");
-    fflush(stdin);
-    scanf("\n%d", &selection);
-    return selection;
+    do
+    {
+        system("@cls||clear");
+        fflush(stdin);
+        char employee_selection[10];
+        printf("\n----------------Employee View-------------------\n\n");
+        printf("Please Make a Selection:\n\n");
+        printf("\t1. View Personal Details\n");
+        printf("\t2. View Tasks\n");
+        printf("\t3. Add Additional Details\n");
+        printf("\t4. Back\n");
+        printf("\n\t\tYour Choice:\t");
+        scanf("%s", &employee_selection);
+
+        if (strlen(employee_selection) > 1)
+        {
+            employee_selection[0] = 'a';
+        }
+
+        //enters the employee view
+        switch (employee_selection[0])
+        {
+        case '1':
+            emp_view_employee(emp_id);
+            continue;
+
+        case '2':
+            emp_task_view(emp_id);
+            continue;
+
+        case '3':
+            emp_edit_employee(emp_id);
+            continue;
+
+        case '4':
+            system("@cls||clear");
+            return;
+
+        default:
+
+            printf("Wrong Choice Entered\n");
+            Sleep(1000);
+            continue;
+        }
+
+    } while (1);
 }
 
 void emp_view_employee(char emp_id[10]) // function for printing employee details and tasks
 {
     FILE *ofile1;
     struct empDetails e;
-    int ch;
+    char selection[10];
 
     do
     {
@@ -367,11 +475,15 @@ void emp_view_employee(char emp_id[10]) // function for printing employee detail
         printf("\n\t4. Patented Contibution");
         printf("\n\t5. Back");
         printf("\n Enter your choice: ");
-        scanf("%d", &ch);
-
-        switch (ch)
+        scanf(" %s", &selection);
+        if (strlen(selection) > 1)
         {
-        case 1:
+            selection[0] = 'a';
+        }
+
+        switch (selection[0])
+        {
+        case '1':
             system("@cls||clear");
             //Open the file for reading
             ofile1 = fopen("emp.dat", "a+");
@@ -381,6 +493,7 @@ void emp_view_employee(char emp_id[10]) // function for printing employee detail
             {
                 if (!strcmpi(e.empId, emp_id))
                 {
+                    system("@cls||clear");
                     printf("\n-------------------Employee Data-----------------------\n\n");
                     printf("\nID:\t\t%s", e.empId);
                     printf("\nName:\t\t%s", e.name);
@@ -404,19 +517,19 @@ void emp_view_employee(char emp_id[10]) // function for printing employee detail
             system("@cls||clear");
             continue;
 
-        case 2:
+        case '2':
             emp_award_view(emp_id); //to view awards
             continue;
 
-        case 3:
+        case '3':
             emp_ach_view(emp_id); //to view achievement
             continue;
 
-        case 4:
+        case '4':
             emp_cont_view(emp_id); //to view contribution
             continue;
 
-        case 5:
+        case '5':
             return;
 
         default:
@@ -427,7 +540,7 @@ void emp_view_employee(char emp_id[10]) // function for printing employee detail
     } while (1);
 }
 
-void emp_details_update(char emp_id[10]) //function to edit employee personal details
+void emp_details_update(char emp_id[10]) //function to add employee personal details
 {
     FILE *outfile, *fdel;
     struct empDetails e;
@@ -442,9 +555,10 @@ void emp_details_update(char emp_id[10]) //function to edit employee personal de
         fflush(stdin);
         printf("\t Employee name: ");
         gets(e.name);
+
         for (int i = 0; i < 20; i++)
         {
-            if ((e.name[i] >= 65) && (e.name[i] <= 112)) //check for characters only in name
+            if (isalpha(e.name[i])) //check for characters only in name
             {
                 isValid = 1;
                 break;
@@ -460,7 +574,7 @@ void emp_details_update(char emp_id[10]) //function to edit employee personal de
         }
         else
         {
-            printf("\n Name should not contain integer or special characters, enter again\n");
+            printf("\n Invalid Name format, enter again\n");
         }
     }
 
@@ -486,9 +600,11 @@ void emp_details_update(char emp_id[10]) //function to edit employee personal de
         fflush(stdin);
         printf("\t Employee contact: ");
         gets(e.contact);
-        if (!strcmpi(e.contact, "0000000000"))
+        if ((e.contact[0] == '0') || (strlen(e.contact) > 10))
         {
             isValid = 0;
+            printf("\n Invalid number format, enter again\n");
+            continue;
         }
 
         for (int i = 0; i < 10; i++)
@@ -509,7 +625,7 @@ void emp_details_update(char emp_id[10]) //function to edit employee personal de
         }
         else
         {
-            printf("\n Contact number should not contain characters, enter again\n");
+            printf("\n Invalid number format, enter again\n");
         }
     }
 
@@ -531,7 +647,7 @@ void emp_details_update(char emp_id[10]) //function to edit employee personal de
         fflush(stdin);
         printf("\t Years of Service: ");
         scanf("%f", &e.service_years);
-        if ((e.age >= 0) && (e.age <= 40)) //check for valid age
+        if ((e.age > 0) && (e.age < 40)) //check for valid age
         {
             break;
         }
@@ -541,30 +657,6 @@ void emp_details_update(char emp_id[10]) //function to edit employee personal de
             continue;
         }
     }
-
-    // //Open file for writing
-    // outfile = fopen("emp.dat", "a+");
-
-    // //delete the previous record
-    // int found;
-    // fdel = fopen("tmp.bin", "wb");
-    // if (!fdel)
-    // {
-    //     printf("Unable to open file temp file.");
-    //     return;
-    // }
-
-    // while (fread(&e, sizeof(struct empDetails), 1, outfile) != NULL)
-    // {
-
-    //     fwrite(&e, sizeof(struct empDetails), 1, fdel);
-    // }
-
-    // fclose(outfile);
-    // fclose(fdel);
-
-    // remove("emp.dat");
-    // rename("tmp.bin", "emp.dat");
 
     //Open file for writing
     outfile = fopen("emp.dat", "a+");
@@ -602,7 +694,7 @@ void add_emp_award(char emp_id[10]) //function to add employee award
         gets(a.awardName);
         for (int i = 0; i < 20; i++)
         {
-            if ((a.awardName[i] >= 65) && (a.awardName[i] <= 112)) //check for characters only in name
+            if (isalpha(a.awardName[i])) //check for characters only in name
             {
                 isValid = 1;
                 break;
@@ -630,7 +722,7 @@ void add_emp_award(char emp_id[10]) //function to add employee award
         gets(a.awardField);
         for (int i = 0; i < 20; i++)
         {
-            if ((a.awardField[i] >= 65) && (a.awardField[i] <= 112)) //check for characters only in name
+            if (isalpha(a.awardField[i])) //check for characters only in name
             {
                 isValid = 1;
                 break;
@@ -658,7 +750,7 @@ void add_emp_award(char emp_id[10]) //function to add employee award
         gets(a.description);
         for (int i = 0; i < 50; i++)
         {
-            if ((a.description[i] >= 65) && (a.description[i] <= 112)) //check for characters only in name
+            if (a.description) //check for characters only in name
             {
                 isValid = 1;
                 break;
@@ -747,74 +839,47 @@ void add_emp_ach(char emp_id[10]) //function to add employee achievement
     fclose(file);
 }
 
-void emp_edit_employee(char emp_id[10]) //function to edit employee details
+void emp_edit_employee(char emp_id[10]) //function to add employee details
 {
-    int choice, x;
+    char selection[10];
 
     do
     {
+        //add options
         system("@cls||clear");
-        printf("\n\t1. View Details\n\t2. Edit Details\n\t3. Back\nEnter your choice: ");
-        scanf("%d", &choice);
 
-        switch (choice)
+        printf("\n--------------------Add Details Menu---------------------\n");
+        printf("\n\t1. Add Award details");
+        printf("\n\t2. Add Patented Software");
+        printf("\n\t3. Add any Meritorious Achievement");
+        printf("\n\t4. Back");
+        printf("\n Select your option: ");
+        if (strlen(selection) > 1)
         {
-        case 1:
-            emp_view_employee(emp_id);
+            selection[0] = 'a';
+        }
+        system("@cls||clear");
+        switch (selection[0])
+        {
+
+        case '1':
+            add_emp_award(emp_id);
             continue;
 
-        case 2:
+        case '2':
+            add_emp_cont(emp_id);
+            continue;
 
-            do
-            {
-                //edit options
-                system("@cls||clear");
+        case '3':
+            add_emp_ach(emp_id);
+            continue;
 
-                printf("\n--------------------Edit Menu---------------------\n");
-                printf("\n\t1. Edit General Details");
-                printf("\n\t2. Add Award details");
-                printf("\n\t3. Add Patented Software");
-                printf("\n\t4. Add any Meritorious Achievement");
-                printf("\n\t5. Back");
-                printf("\n Select your option: ");
-                scanf("%d", &x);
-
-                system("@cls||clear");
-
-                switch (x)
-                {
-                case 1:
-                    emp_details_update(emp_id);
-                    continue;
-
-                case 2:
-                    add_emp_award(emp_id);
-                    continue;
-
-                case 3:
-                    add_emp_cont(emp_id);
-                    continue;
-
-                case 4:
-                    add_emp_ach(emp_id);
-                    continue;
-
-                case 5:
-                    return;
-
-                default:
-
-                    printf("\nInvalid choice!!!");
-                    Sleep(1000);
-                    continue;
-                }
-            } while (1);
-
-        case 3:
+        case '4':
             return;
 
         default:
-            printf("Invalid choice!!!");
+
+            printf("\nInvalid choice!!!");
             Sleep(1000);
             continue;
         }
@@ -830,30 +895,12 @@ void admin_add_employee() //function for admin to add employee
     scanf("%s", &id);
 
     int result = checkEmployee(id);
-    int ch = 0;
+    int ch;
     if (result)
     {
-        do
-        {
-            printf("\nEmployee already exist!!!\n\n");
-            printf("Do you wish to update the employee details?\n1. Yes\n2. No\n: ");
-            scanf("%d", ch);
-            if (ch == 1)
-            {
-                emp_edit_employee(id);
-                continue;
-            }
-            else if (ch == 2)
-            {
-                return;
-            }
-            else
-            {
-                printf("\nInvalid choice");
-                Sleep(1000);
-                continue;
-            }
-        } while (1);
+        printf("\nEmployee already exist!!!\n\n");
+        Sleep(1000);
+        return;
     }
 
     emp_details_update(id);
@@ -1096,7 +1143,7 @@ void admin_assign_task() //function for admin to assign task to employee
         gets(task.taskName);
         for (int i = 0; i < 20; i++)
         {
-            if ((task.taskName[i] >= 65) && (task.taskName[i] <= 112))
+            if (isalpha(task.taskName[i]))
             {
                 isValid = 1;
                 break;
@@ -1143,106 +1190,6 @@ void admin_assign_task() //function for admin to assign task to employee
 
 int main()
 {
-    int main_selection, admin_selection, employee_selection, cred_result;
-    char id[10];
-
-    while (1)
-    {
-        main_selection = selectScope(); //navigationg to select the user
-        system("@cls||clear");
-
-        switch (main_selection)
-        {
-        case 1:
-            getCredentials();
-
-        Admins_menu:
-            admin_selection = admin_menu();
-            system("@cls||clear");
-
-            //enters the admin view
-            switch (admin_selection)
-            {
-            case 1:
-                admin_add_employee();
-                goto Admins_menu; // goes to admin menu
-                break;
-            case 2:
-                admin_view_employee();
-                goto Admins_menu; // goes to admin menu
-                break;
-            case 3:
-                admin_edit_employee();
-                goto Admins_menu; // goes to admin menu
-                break;
-            case 4:
-                admin_assign_task();
-                goto Admins_menu; // goes to admin menu
-                break;
-            case 5:
-                //logs out
-                system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                exit(0);
-            default:
-                printf("Invalid choice\n");
-                Sleep(1000);
-                goto Admins_menu;
-                break;
-            }
-        case 2:
-            printf("\n Enter ID: ");
-            scanf("%s", &id);
-
-            getEmpPassword(id);
-
-        Employee_menu:
-            employee_selection = employee_menu();
-            system("@cls||clear");
-
-            //enters the employee view
-            switch (employee_selection)
-            {
-            case 1:
-                emp_view_employee(id);
-                goto Employee_menu; // goes to employee menu
-                break;
-
-            case 2:
-                emp_task_view(id);
-                goto Employee_menu; // goes to employee menu
-                break;
-
-            case 3:
-                emp_edit_employee(id);
-                goto Employee_menu; // goes to employee menu
-                break;
-
-            case 4:
-                system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                exit(0);
-
-            default:
-
-                printf("Wrong Choice Entered\n");
-                Sleep(1000);
-                goto Employee_menu;
-                break;
-            }
-            break;
-
-        case 3:
-            system("@cls||clear");
-            printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-            exit(0);
-
-        default:
-            printf("Invalid choice\n");
-            Sleep(1000);
-            break;
-        }
-    }
-
+    selectScope();
     return 0;
 }
