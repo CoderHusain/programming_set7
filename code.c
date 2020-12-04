@@ -19,7 +19,7 @@ struct empDetails //structure for employee details
     char contact[11];
     char qualifications[50];
     char skills[50];
-    float service_years;
+    short service_years;
 };
 
 struct empAward //structure for awards recieved by employee
@@ -133,7 +133,7 @@ void getCredentials() //function to check admin password
         scanf("%s", &pass);
         if (!strcmp(pass, "incorrect")) //if password is correct,return 0
         {
-            result = 0;
+            return;
         }
         else
         {
@@ -144,14 +144,19 @@ void getCredentials() //function to check admin password
             scanf("%d", &val);
             if (val == 1)
                 continue;
-            else
+            else if (val == 2)
             {
                 system("@cls||clear");
                 printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n"); //will logout
                 exit(0);
             }
+            else
+            {
+                printf("Invalid Choice!!!");
+                Sleep(1000);
+            }
         }
-    } while (result);
+    } while (1);
 }
 
 int checkEmployee(char emp_id[10]) //function to check if the employee exists or not
@@ -200,6 +205,11 @@ void getEmpPassword(char id[10]) //function to check employee password
                 printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
                 exit(0);
             }
+            else
+            {
+                printf("Invalid Choice!!!\n");
+                Sleep(1000);
+            }
         }
     } while (result != 1);
 
@@ -231,11 +241,20 @@ void getEmpPassword(char id[10]) //function to check employee password
                 printf("\t1.Try Entering Again \n");
                 printf("\t2.Log Out \n");
                 scanf("%d", &val);
-                if (val == 2)
+                if (val == 1)
+                {
+                    continue;
+                }
+                else if (val == 2)
                 {
                     system("@cls||clear");
                     printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
                     exit(0);
+                }
+                else
+                {
+                    printf("Invalid Choice!!!\n");
+                    Sleep(1000);
                 }
 
             } while (val == 1);
@@ -540,6 +559,26 @@ void emp_view_employee(char emp_id[10]) // function for printing employee detail
     } while (1);
 }
 
+int checkString(char String[50])
+{
+    int isValid;
+
+    for (int i = 0; i < strlen(String); i++)
+    {
+        if ((((String[i] >= 65) && (String[i] <= 90)) || ((String[i] >= 97) && (String[i] <= 122))) || String[i] == 32) //check for characters only in name
+        {
+            isValid = 1;
+        }
+        else
+        {
+            isValid = 0;
+            break;
+        }
+    }
+
+    return isValid;
+}
+
 void emp_details_update(char emp_id[10]) //function to add employee personal details
 {
     FILE *outfile, *fdel;
@@ -549,26 +588,13 @@ void emp_details_update(char emp_id[10]) //function to add employee personal det
     printf("\t Employee password: ");
     gets(e.password);
 
-    int isValid = 1;
     while (1)
     {
         fflush(stdin);
         printf("\t Employee name: ");
         gets(e.name);
 
-        for (int i = 0; i < 20; i++)
-        {
-            if (isalpha(e.name[i])) //check for characters only in name
-            {
-                isValid = 1;
-                break;
-            }
-            else
-            {
-                isValid = 0;
-            }
-        }
-        if (isValid)
+        if (checkString(e.name))
         {
             break;
         }
@@ -594,7 +620,7 @@ void emp_details_update(char emp_id[10]) //function to add employee personal det
         }
     }
 
-    isValid = 1;
+    int isValid = 1;
     while (1)
     {
         fflush(stdin);
@@ -646,8 +672,8 @@ void emp_details_update(char emp_id[10]) //function to add employee personal det
     {
         fflush(stdin);
         printf("\t Years of Service: ");
-        scanf("%f", &e.service_years);
-        if ((e.age > 0) && (e.age < 40)) //check for valid age
+        scanf("%d", &e.service_years);
+        if ((e.service_years > 0) && (e.service_years < 40)) //check for valid age
         {
             break;
         }
@@ -680,7 +706,6 @@ void add_emp_award(char emp_id[10]) //function to add employee award
 {
     FILE *file;
     struct empAward a;
-    int isValid;
 
     //Open the file
     file = fopen("award.dat", "a+");
@@ -692,19 +717,8 @@ void add_emp_award(char emp_id[10]) //function to add employee award
         fflush(stdin);
         printf("\nEnter Award Name: ");
         gets(a.awardName);
-        for (int i = 0; i < 20; i++)
-        {
-            if (isalpha(a.awardName[i])) //check for characters only in name
-            {
-                isValid = 1;
-                break;
-            }
-            else
-            {
-                isValid = 0;
-            }
-        }
-        if (isValid)
+
+        if (checkString(a.awardName))
         {
             break;
         }
@@ -714,25 +728,13 @@ void add_emp_award(char emp_id[10]) //function to add employee award
         }
     }
 
-    isValid = 1;
     while (1)
     {
         fflush(stdin);
         printf("\nEnter Award Field (IT/Management/HR/etc): ");
         gets(a.awardField);
-        for (int i = 0; i < 20; i++)
-        {
-            if (isalpha(a.awardField[i])) //check for characters only in name
-            {
-                isValid = 1;
-                break;
-            }
-            else
-            {
-                isValid = 0;
-            }
-        }
-        if (isValid)
+
+        if (checkString(a.awardField))
         {
             break;
         }
@@ -742,25 +744,13 @@ void add_emp_award(char emp_id[10]) //function to add employee award
         }
     }
 
-    isValid = 1;
     while (1)
     {
         fflush(stdin);
         printf("\nEnter Award Description: ");
         gets(a.description);
-        for (int i = 0; i < 50; i++)
-        {
-            if (a.description) //check for characters only in name
-            {
-                isValid = 1;
-                break;
-            }
-            else
-            {
-                isValid = 0;
-            }
-        }
-        if (isValid)
+
+        if (a.description)
         {
             break;
         }
@@ -792,12 +782,54 @@ void add_emp_cont(char emp_id[10]) //function to add employee contribution
     file = fopen("patent.dat", "a+");
     fflush(stdin);
     strcpy(c.empId, emp_id);
-    printf("\nEnter Software Name: ");
-    gets(c.softwareName);
-    printf("\nEnter Description: ");
-    gets(c.desc);
-    printf("\nIs it patented (yes/no): ");
-    gets(c.isPatent);
+
+    while (1)
+    {
+        fflush(stdin);
+        printf("\nEnter Software Name: ");
+        gets(c.softwareName);
+
+        if (checkString(c.softwareName))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Name should not contain integer or special characters, enter again\n");
+        }
+    }
+
+    while (1)
+    {
+        fflush(stdin);
+        printf("\nEnter Description: ");
+        gets(c.desc);
+
+        if (checkString(c.desc))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Description should not contain integer or special characters, enter again\n");
+        }
+    }
+
+    while (1)
+    {
+        fflush(stdin);
+        printf("\nIs it patented (yes/no): ");
+        gets(c.isPatent);
+
+        if ((!strcmpi(c.isPatent, "YES")) || (!strcmpi(c.isPatent, "NO")))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n It should either be yes or no, enter again\n");
+        }
+    }
 
     //Write struct to the file
     fwrite(&c, sizeof(struct empContribution), 1, file);
@@ -821,10 +853,38 @@ void add_emp_ach(char emp_id[10]) //function to add employee achievement
     file = fopen("ach.dat", "a+");
     fflush(stdin);
     strcpy(a.empId, emp_id);
-    printf("\nIs it a meritorious Achievement (yes/no): ");
-    gets(a.isAchievement);
-    printf("\nEnter Description: ");
-    gets(a.achievementDetails);
+
+    while (1)
+    {
+        fflush(stdin);
+        printf("\nIs it a meritorious Achievement (yes/no): ");
+        gets(a.isAchievement);
+
+        if ((!strcmpi(a.isAchievement, "YES")) || (!strcmpi(a.isAchievement, "NO")))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n It should either be yes or no, enter again\n");
+        }
+    }
+
+    while (1)
+    {
+        fflush(stdin);
+        printf("\nEnter Description: ");
+        gets(a.achievementDetails);
+
+        if (checkString(a.achievementDetails))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Description should not contain integer or special characters, enter again\n");
+        }
+    }
 
     //Write struct to the file
     fwrite(&a, sizeof(struct empAchievement), 1, file);
@@ -854,6 +914,7 @@ void emp_edit_employee(char emp_id[10]) //function to add employee details
         printf("\n\t3. Add any Meritorious Achievement");
         printf("\n\t4. Back");
         printf("\n Select your option: ");
+        scanf("%s", &selection);
         if (strlen(selection) > 1)
         {
             selection[0] = 'a';
@@ -942,6 +1003,11 @@ void admin_view_employee() //function for admin to view employee
                 printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
                 exit(0);
             }
+            else
+            {
+                printf("Invalid Choice!!!\n");
+                Sleep(1000);
+            }
         }
     } while (result != 1);
 
@@ -985,6 +1051,11 @@ void admin_edit_employee() //function for admin to edit employee details
                 system("@cls||clear");
                 printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
                 exit(0);
+            }
+            else
+            {
+                printf("Invalid Choice!!!\n");
+                Sleep(1000);
             }
         }
     } while (result != 1);
@@ -1130,30 +1201,23 @@ void admin_assign_task() //function for admin to assign task to employee
                 printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
                 exit(0);
             }
+            else
+            {
+                printf("Invalid Choice!!!\n");
+                Sleep(1000);
+            }
         }
     } while (result != 1);
 
     strcpy(task.empId, id);
 
-    int isValid = 1;
     while (1)
     {
         fflush(stdin);
         printf("Enter the task name: ");
         gets(task.taskName);
-        for (int i = 0; i < 20; i++)
-        {
-            if (isalpha(task.taskName[i]))
-            {
-                isValid = 1;
-                break;
-            }
-            else
-            {
-                isValid = 0;
-            }
-        }
-        if (isValid)
+
+        if (checkString(task.taskName))
         {
             break;
         }
@@ -1163,8 +1227,22 @@ void admin_assign_task() //function for admin to assign task to employee
         }
     }
 
-    printf("Enter the task description: ");
-    gets(task.description);
+    while (1)
+    {
+        fflush(stdin);
+        printf("Enter the task description: ");
+        gets(task.description);
+
+        if (checkString(task.description))
+        {
+            break;
+        }
+        else
+        {
+            printf("\n Description should not contain integer or special characters, enter again\n");
+        }
+    }
+
     printf("Enter the required skills for the task : ");
     gets(task.req_skills);
 
