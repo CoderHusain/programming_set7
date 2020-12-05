@@ -140,15 +140,16 @@ void getCredentials() //function to check admin password
             printf("\t\nEntered password is incorrect\n"); //if password is incorrect
             int val;
             printf("\t1.Try Entering Again \n");
-            printf("\t2.Log Out \n");
+            printf("\t2.Back \n");
             scanf("%d", &val);
             if (val == 1)
                 continue;
             else if (val == 2)
             {
                 system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n"); //will logout
-                exit(0);
+                // printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n"); //will logout
+                // exit(0);
+                return;
             }
             else
             {
@@ -190,11 +191,12 @@ void getEmpPassword(char id[10]) //function to check employee password
             system("@cls||clear");
             printf("\tEmployee ID is incorrect\n"); //if employee does not exist
             printf("\t1.Try Entering Again \n");
-            printf("\t2.Log Out \n");
+            printf("\t2.Back \n");
             scanf("%d", &val);
             if (val == 1)
             {
                 fflush(stdin); // enter emp id
+                system("@cls||clear");
                 printf("\n Enter ID: ");
                 scanf("%s", &eId);
                 strcpy(id, eId);
@@ -202,8 +204,9 @@ void getEmpPassword(char id[10]) //function to check employee password
             else if (val == 2)
             {
                 system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                exit(0);
+                // printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                // exit(0);
+                return;
             }
             else
             {
@@ -230,7 +233,7 @@ void getEmpPassword(char id[10]) //function to check employee password
                 system("@cls||clear");
                 printf("\t\nEnter the password: ");
                 scanf("%s", &pass);
-                printf("%s,%s", e.password, pass);
+                // printf("%s,%s", e.password, pass);
                 if (!strcmp(pass, e.password))
                 {
                     fclose(infile);
@@ -239,7 +242,7 @@ void getEmpPassword(char id[10]) //function to check employee password
                 system("@cls||clear"); //if password is incorrect
                 printf("\n\nIncorrect Password!!!\n ");
                 printf("\t1.Try Entering Again \n");
-                printf("\t2.Log Out \n");
+                printf("\t2.Back \n");
                 scanf("%d", &val);
                 if (val == 1)
                 {
@@ -248,8 +251,9 @@ void getEmpPassword(char id[10]) //function to check employee password
                 else if (val == 2)
                 {
                     system("@cls||clear");
-                    printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                    exit(0);
+                    // printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                    // exit(0);
+                    return;
                 }
                 else
                 {
@@ -974,6 +978,7 @@ void admin_view_employee() //function for admin to view employee
     // enter emp id
     char id[10], eId[10];
     int result;
+    system("@cls||clear");
     printf("\n Enter ID: ");
     scanf("%s", &id);
     do
@@ -986,12 +991,13 @@ void admin_view_employee() //function for admin to view employee
             system("@cls||clear");
             printf("\tEmployee ID is incorrect\n");
             printf("\t1.Try Entering Again \n");
-            printf("\t2.Log Out \n");
+            printf("\t2.Back \n");
             scanf("%d", &val);
             if (val == 1)
             {
                 // enter emp id
                 fflush(stdin);
+                system("@cls||clear");
                 printf("\n Enter ID: ");
                 scanf("%s", &eId);
                 strcpy(id, eId);
@@ -1000,8 +1006,9 @@ void admin_view_employee() //function for admin to view employee
             else if (val == 2)
             {
                 system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                exit(0);
+                // printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                // exit(0);
+                return;
             }
             else
             {
@@ -1035,12 +1042,13 @@ void admin_edit_employee() //function for admin to edit employee details
             system("@cls||clear");
             printf("\tEmployee ID is incorrect\n");
             printf("\t1.Try Entering Again \n");
-            printf("\t2.Log Out \n");
+            printf("\t2.Back\n");
             scanf("%d", &val);
             if (val == 1)
             {
                 // enter emp id
                 fflush(stdin);
+                system("@cls||clear");
                 printf("\n Enter ID: ");
                 scanf("%s", &eId);
                 strcpy(id, eId);
@@ -1049,8 +1057,9 @@ void admin_edit_employee() //function for admin to edit employee details
             else if (val == 2)
             {
                 system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                exit(0);
+                // printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                // exit(0);
+                return;
             }
             else
             {
@@ -1184,12 +1193,13 @@ void admin_assign_task() //function for admin to assign task to employee
             system("@cls||clear");
             printf("\tEmployee ID is incorrect\n");
             printf("\t1.Try Entering Again \n");
-            printf("\t2.Log Out \n");
+            printf("\t2.Back \n");
             scanf("%d", &val);
             if (val == 1)
             {
                 // enter emp id
                 fflush(stdin);
+                system("@cls||clear");
                 printf("\n Enter ID: ");
                 scanf("%s", &eId);
                 strcpy(id, eId);
@@ -1198,8 +1208,8 @@ void admin_assign_task() //function for admin to assign task to employee
             else if (val == 2)
             {
                 system("@cls||clear");
-                printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
-                exit(0);
+                // printf("\n\n ***** SUCCESSFULLY LOGGED OUT ******\n\n");
+                // exit(0);
             }
             else
             {
